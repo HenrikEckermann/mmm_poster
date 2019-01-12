@@ -1,0 +1,52 @@
+/* Whole document: */
+
+body{
+  font-family: "Arial";
+  /*background-color: #e5f6ff;#b3c3de*/
+  background-color: #e0e0e0;
+ 
+}
+
+
+/*
+.bg-primary {
+  background-color: rgba(235, 104, 100, 0.7);
+}
+
+*/
+
+a {
+    text-decoration: none;
+}
+
+/* unvisited link */
+a {
+    color: black;
+}
+
+a {
+  box-shadow: none;
+}
+
+/* mouse over link */
+/*
+a:hover {
+    color: blue;
+    text-decoration: none;
+}
+*/
+
+
+.navbar {
+  background-color: #ef8a62;
+  border-color:black;
+}
+
+
+/* .chart-title {
+  border-bottom: 1px solid #d7d7d7;
+  color: #666;
+  font-size: 14px;
+  font-weight: 300;
+  padding: 7px 10px 4px;
+} */

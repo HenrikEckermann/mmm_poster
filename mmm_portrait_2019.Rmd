@@ -15,6 +15,7 @@ library(hrbrthemes)
 library(patchwork)
 library(ggpubr)
 library(microbiome)
+library(ggrepel)
 load(here("data/cc_analyses_workspace.RData"))
 source("https://raw.githubusercontent.com/HenrikEckermann/in_use/master/reporting.R")
 source("https://raw.githubusercontent.com/HenrikEckermann/in_use/master/mb_helper.R")
@@ -103,8 +104,7 @@ biplot <- function(
     create_plot <- function(data, pc = 1, pc1, pc2, title = "") {
         data %>%        
         ggplot(aes_string(glue("PC{pc}"), glue("PC{pc+1}"), label = "sample_id", color = color)) +
-            geom_text(data = pcx_rot, aes_string(glue("PC{pc}"), glue("PC{pc+1}"), label = "taxa"), color = "#999999", size = 3, alpha = 0.4) +
-            geom_text(data = pcx_rot_fit, aes_string(glue("PC{pc}"), glue("PC{pc+1}"), label = "taxa"), color = otu_color, size = 3) +
+            geom_text_repel(data = pcx_rot_fit, aes_string(glue("PC{pc}"), glue("PC{pc+1}"), label = "taxa"), color = otu_color, size = 5) +
             xlab(glue("PC{pc}: [{pc1*100}%]")) +  ylab(glue("PC{pc+1}: [{pc2*100}%]")) +
             scale_y_continuous(sec.axis = ~./scaling_factor) +
             scale_x_continuous(sec.axis = ~./scaling_factor) +
@@ -160,7 +160,7 @@ biplot <- function(
 <table style="width:100%">
 <tr>
   <td><center><h3>
-  **Does early entrace to center-based childcare alter children’s intestinal microbiota?**
+  **Does early entrance to center-based childcare alter children’s intestinal microbiota?**
   </h3></center></td>
 </tr>
 <tr><td><center>
@@ -229,7 +229,7 @@ set the `render_print` option to `FALSE`.
 - PERMANOVA (Aitchison distance)
 - Hierarchical Linear Mixed Models (Gaussian family)
 - Bayesian Hierarchical Generalized Linear Models (Generalized normal distribution)
-- Randfom Forest Classification
+- Random Forest Classification
 
 
 
@@ -242,7 +242,7 @@ set the `render_print` option to `FALSE`.
 
 
 toptaxa <- comp_all_df %>%
-    filter(prob < 0.025 | prob > 0.975, abs(mean) >= 0.2, comparison %in% c("ccpost_noccpost", "ccpost_ccpre")) %>%
+    filter(prob < 0.05 | prob > 0.95, abs(mean) >= 0.15, comparison %in% c("ccpost_noccpost", "ccpost_ccpre")) %>%
     select(-prob) %>%
     arrange(desc(abs(mean)))
 
@@ -253,17 +253,17 @@ biplot_time_2 <- biplot(pseq.clr, split = "cc", connect_series = "time", otu_col
 scaling_factor <- 10
 
 
-(biplot_time_2[[1]] + xlim(-12.5, 5) + ylim(-5.25, 8) + 
-  scale_y_continuous(sec.axis = ~./scaling_factor) + 
-  scale_x_continuous(sec.axis = ~./scaling_factor) +
+(biplot_time_2[[1]] + 
+  scale_y_continuous(limits = c(-5.25, 8), sec.axis = ~./scaling_factor) + 
+  scale_x_continuous(limits = c(-12.5, 5), sec.axis = ~./scaling_factor) +
   ggtitle("A1 Overall composition: Childcare") + 
   theme(plot.title = element_text(size = 20, face = "bold", color = "#999999")) |
-  biplot_time_2[[2]] + xlim(-12.5, 5) + ylim(-5.25, 8) + 
-  scale_y_continuous(sec.axis = ~./scaling_factor) + 
-  scale_x_continuous(sec.axis = ~./scaling_factor) +
+  biplot_time_2[[2]] +
+  scale_y_continuous(limits = c(-5.25, 8), sec.axis = ~./scaling_factor) + 
+  scale_x_continuous(limits = c(-12.5, 5), sec.axis = ~./scaling_factor) +
   ggtitle("A2 Overall composition: Home") +
   theme(plot.title = element_text(size = 20, face = "bold", color = "#999999"))) /
-  (biplot_time_2[[3]] + xlim(-6.25, 5) + ylim(-5.5, 7) + 
+  (biplot_time_2[[3]] + xlim(-7, 5) + ylim(-5.5, 7) + 
   scale_y_continuous(sec.axis = ~./scaling_factor) + 
   scale_x_continuous(sec.axis = ~./scaling_factor) +
   ggtitle("A3 Overall composition (PC 3&4): Childcare") +
